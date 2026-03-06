@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /recruitment/
+
+  # 1. Allow API requests to go to the api folder naturally
+  RewriteCond %{REQUEST_URI} ^/recruitment/api/ [NC]
+  RewriteRule ^ - [L]
+
+  # 2. Prevent infinite loops if already in the dist folder
+  RewriteCond %{REQUEST_URI} ^/recruitment/dist/ [NC]
+  RewriteRule ^ - [L]
+
+  # 3. Transparently route all other requests to the dist folder where the compiled React app lives
+  RewriteRule ^(.*)$ dist/$1 [L]
+</IfModule>

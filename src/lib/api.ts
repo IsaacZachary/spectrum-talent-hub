@@ -1,6 +1,6 @@
 import { Job, Application, ApplicationStatus } from "./types";
 
-const API_BASE_URL = "/api"; // Adjusted for relative path on server
+const API_BASE_URL = "/recruitment/api"; // Adjusted for subfolder deployment
 
 export const api = {
   // Jobs
@@ -9,8 +9,8 @@ export const api = {
     if (!response.ok) throw new Error("Failed to fetch jobs");
     const data = await response.json();
     return data.map((job: any) => ({
-        ...job,
-        requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements) : job.requirements
+      ...job,
+      requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements) : job.requirements
     }));
   },
 
@@ -19,8 +19,8 @@ export const api = {
     if (!response.ok) throw new Error("Job not found");
     const job = await response.json();
     return {
-        ...job,
-        requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements) : job.requirements
+      ...job,
+      requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements) : job.requirements
     };
   },
 
