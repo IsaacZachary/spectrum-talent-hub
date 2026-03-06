@@ -9,13 +9,11 @@ const PortalHeader = () => {
   return (
     <header className="gradient-primary border-b border-primary/20">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded gradient-accent flex items-center justify-center">
-            <Briefcase className="h-4 w-4 text-accent-foreground" />
-          </div>
-          <div>
-            <span className="font-heading font-bold text-primary-foreground text-sm leading-none block">
-              SPECTRUM NETWORK
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/logo.png" alt="Spectrum Network" className="h-8 w-auto object-contain" />
+          <div className="hidden sm:block">
+            <span className="font-heading font-bold text-primary-foreground text-sm leading-none block uppercase tracking-wider">
+              Spectrum Network
             </span>
             <span className="text-primary-foreground/60 text-[10px] leading-none">
               Recruitment Portal
