@@ -15,7 +15,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/recruitment">
         <Routes>
           <Route path="/" element={<JobListings />} />
           <Route path="/apply/:jobId" element={<ApplicationForm />} />
