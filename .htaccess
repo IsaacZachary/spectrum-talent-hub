@@ -1,0 +1,21 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /recruitment/
+
+  # Always pass PHP files directly (deploy.php, api, etc.)
+  RewriteRule \.php$ - [L]
+
+  # Always pass api folder directly
+  RewriteRule ^api/ - [L]
+
+  # Route assets to build subfolder
+  RewriteRule ^(assets/.+)$ build/$1 [L]
+
+  # Route static files (logo, favicon, robots) to build subfolder
+  RewriteRule ^(logo\.png|favicon\.ico|robots\.txt|placeholder\.svg)$ build/$1 [L]
+
+  # Everything else (SPA routes like /admin, /apply/...) -> build/index.html
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ build/index.html [L]
+</IfModule>
