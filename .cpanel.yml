@@ -1,4 +1,4 @@
 ---
 deployment:
   tasks:
-    - /bin/cp -r /home3/spectsx2/public_html/recruitment/build/. /home3/spectsx2/public_html/recruitment/
+    - /bin/cp -R build/* /home3/spectsx2/public_html/recruitment/

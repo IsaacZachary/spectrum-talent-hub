@@ -2,16 +2,19 @@
   RewriteEngine On
   RewriteBase /recruitment/
 
-  # Pass PHP files directly (deploy.php, api scripts)
+  # Let PHP files load normally
   RewriteRule \.php$ - [L]
 
-  # Pass api folder directly
+  # Let API requests load normally
   RewriteRule ^api/ - [L]
 
-  # Route assets and static files to build/ subfolder
-  RewriteRule ^assets/(.+)$ build/assets/$1 [L]
-  RewriteRule ^(logo\.png|favicon\.ico|robots\.txt|placeholder\.svg)$ build/$1 [L]
+  # For any requests inside /recruitment/ that ARE NOT files (-f) or directories (-d)...
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  # ...route them to build/index.html (This handles SPA logic like /admin, /apply)
+  RewriteRule ^(.*)$ build/index.html [L]
 
-  # Route EVERYTHING ELSE to build/index.html (no !-d condition)
-  RewriteRule ^ build/index.html [L]
+  # This is the kicker: If they ask for /recruitment/ DIRECTLY (which IS a directory, so the condition above failed)
+  # BUT it has no normal index file inside it, route them manually to build/index.html
+  RewriteRule ^$ build/index.html [L]
 </IfModule>
