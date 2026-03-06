@@ -1,5 +1,4 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home3/spectsx2/public_html/recruitment/
-    - /bin/cp -r build/* $DEPLOYPATH
+    - /bin/cp -r /home3/spectsx2/public_html/recruitment/build/. /home3/spectsx2/public_html/recruitment/
