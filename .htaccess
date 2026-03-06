@@ -2,14 +2,15 @@
   RewriteEngine On
   RewriteBase /recruitment/
 
-  # 1. Allow API requests to go to the api folder naturally
+  # Allow API requests to pass through to the api folder
   RewriteCond %{REQUEST_URI} ^/recruitment/api/ [NC]
   RewriteRule ^ - [L]
 
-  # 2. Prevent infinite loops if already in the dist folder
-  RewriteCond %{REQUEST_URI} ^/recruitment/dist/ [NC]
-  RewriteRule ^ - [L]
+  # Serve files directly from the build folder if they exist
+  RewriteCond %{DOCUMENT_ROOT}/recruitment/build%{REQUEST_URI} -f [OR]
+  RewriteCond %{DOCUMENT_ROOT}/recruitment/build%{REQUEST_URI} -d
+  RewriteRule ^(.*)$ build/$1 [L]
 
-  # 3. Transparently route all other requests to the dist folder where the compiled React app lives
-  RewriteRule ^(.*)$ dist/$1 [L]
+  # Otherwise, fall back to the SPA entry point
+  RewriteRule ^ build/index.html [L]
 </IfModule>
