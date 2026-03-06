@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Users, Briefcase, FileText, TrendingUp, Plus } from "lucide-react";
-import { Application, statusColors, type ApplicationStatus } from "@/lib/types";
+import { Application, statusColors, type ApplicationStatus, Job } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import PortalHeader from "@/components/PortalHeader";
-import { mockJobs, mockApplications } from "@/lib/mockData";
+import { api } from "@/lib/api";
 import { toast } from "sonner";
 
 const statusLabels: Record<ApplicationStatus, string> = {
@@ -26,11 +26,31 @@ const statusLabels: Record<ApplicationStatus, string> = {
 };
 
 const AdminDashboard = () => {
-  const [applications, setApplications] = useState(mockApplications);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [appData, jobData] = await Promise.all([
+          api.getApplications(),
+          api.getJobs()
+        ]);
+        setApplications(appData);
+        setJobs(jobData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const stats = [
-    { label: "Open Positions", value: mockJobs.filter((j) => j.status === "open").length, icon: Briefcase, color: "text-primary" },
+    { label: "Open Positions", value: jobs.filter((j) => j.status === "open").length, icon: Briefcase, color: "text-primary" },
     { label: "Total Applications", value: applications.length, icon: FileText, color: "text-accent" },
     { label: "New Applications", value: applications.filter((a) => a.status === "new").length, icon: TrendingUp, color: "text-info" },
     { label: "Shortlisted", value: applications.filter((a) => a.status === "shortlisted").length, icon: Users, color: "text-success" },
@@ -38,11 +58,16 @@ const AdminDashboard = () => {
 
   const filteredApps = filterStatus === "all" ? applications : applications.filter((a) => a.status === filterStatus);
 
-  const updateStatus = (appId: string, newStatus: ApplicationStatus) => {
-    setApplications((prev) =>
-      prev.map((a) => (a.id === appId ? { ...a, status: newStatus } : a))
-    );
-    toast.success(`Application status updated to ${statusLabels[newStatus]}`);
+  const updateStatus = async (appId: string, newStatus: ApplicationStatus) => {
+    try {
+      await api.updateApplicationStatus(appId, newStatus);
+      setApplications((prev) =>
+        prev.map((a) => (a.id === appId ? { ...a, status: newStatus } : a))
+      );
+      toast.success(`Application status updated to ${statusLabels[newStatus]}`);
+    } catch (error) {
+      toast.error("Failed to update status");
+    }
   };
 
   return (
@@ -65,25 +90,46 @@ const AdminDashboard = () => {
               <DialogHeader>
                 <DialogTitle className="font-heading">Post a New Job</DialogTitle>
               </DialogHeader>
-              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); toast.success("Job posted! (Demo)"); }}>
+              <form className="space-y-4" onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const newJob = {
+                  title: formData.get("title") as string,
+                  department: formData.get("department") as string,
+                  location: formData.get("location") as string,
+                  type: formData.get("type") as any,
+                  salary: formData.get("salary") as string,
+                  description: formData.get("description") as string,
+                  status: "open",
+                  closingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                };
+                try {
+                  await api.createJob(newJob);
+                  toast.success("Job posted successfully!");
+                  const updatedJobs = await api.getJobs();
+                  setJobs(updatedJobs);
+                } catch (error) {
+                  toast.error("Failed to post job");
+                }
+              }}>
                 <div className="space-y-2">
                   <Label>Job Title</Label>
-                  <Input placeholder="e.g. Security Analyst" />
+                  <Input name="title" placeholder="e.g. Security Analyst" required />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label>Department</Label>
-                    <Input placeholder="e.g. Investigations" />
+                    <Input name="department" placeholder="e.g. Investigations" required />
                   </div>
                   <div className="space-y-2">
                     <Label>Location</Label>
-                    <Input placeholder="e.g. Nairobi" />
+                    <Input name="location" placeholder="e.g. Nairobi" required />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
                     <Label>Job Type</Label>
-                    <Select defaultValue="Full-time">
+                    <Select name="type" defaultValue="Full-time">
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Full-time">Full-time</SelectItem>
@@ -94,12 +140,12 @@ const AdminDashboard = () => {
                   </div>
                   <div className="space-y-2">
                     <Label>Salary Range</Label>
-                    <Input placeholder="e.g. KES 80K-120K" />
+                    <Input name="salary" placeholder="e.g. KES 80K-120K" />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Description</Label>
-                  <Textarea rows={3} placeholder="Job description..." />
+                  <Textarea name="description" rows={3} placeholder="Job description..." required />
                 </div>
                 <Button type="submit" variant="accent" className="w-full">Publish Job</Button>
               </form>
@@ -220,7 +266,7 @@ const AdminDashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {mockJobs.map((job) => (
+                    {jobs.map((job) => (
                       <TableRow key={job.id}>
                         <TableCell className="font-medium text-sm">{job.title}</TableCell>
                         <TableCell className="text-sm">{job.department}</TableCell>

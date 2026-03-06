@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Upload, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,15 +8,42 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import PortalHeader from "@/components/PortalHeader";
-import { mockJobs } from "@/lib/mockData";
+import { Job } from "@/lib/types";
+import { api } from "@/lib/api";
 import { toast } from "sonner";
 
 const ApplicationForm = () => {
   const { jobId } = useParams();
   const navigate = useNavigate();
-  const job = mockJobs.find((j) => j.id === jobId);
+  const [job, setJob] = useState<Job | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      if (!jobId) return;
+      try {
+        const data = await api.getJob(jobId);
+        setJob(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchJob();
+  }, [jobId]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-center py-20">
+        <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
 
   if (!job) {
     return (
@@ -52,10 +79,38 @@ const ApplicationForm = () => {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast.success("Application submitted successfully!");
+    if (!job) return;
+
+    setIsSubmitting(true);
+    try {
+      let resumeUrl = "";
+      if (resumeFile) {
+        const uploadRes = await api.uploadResume(resumeFile);
+        resumeUrl = uploadRes.url;
+      }
+
+      const formData = new FormData(e.currentTarget);
+      const applicationData = {
+        jobId: job.id,
+        jobTitle: job.title,
+        applicantName: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        coverLetter: formData.get("cover") as string,
+        resumeUrl: resumeUrl
+      };
+
+      await api.submitApplication(applicationData);
+      setSubmitted(true);
+      toast.success("Application submitted successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to submit application. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -108,15 +163,15 @@ const ApplicationForm = () => {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name *</Label>
-                  <Input id="name" placeholder="e.g. Jane Mwangi" required />
+                  <Input id="name" name="name" placeholder="e.g. Jane Mwangi" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address *</Label>
-                  <Input id="email" type="email" placeholder="jane@example.com" required />
+                  <Input id="email" name="email" type="email" placeholder="jane@example.com" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number *</Label>
-                  <Input id="phone" type="tel" placeholder="+254 7XX XXX XXX" required />
+                  <Input id="phone" name="phone" type="tel" placeholder="+254 7XX XXX XXX" required />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="location">Current Location</Label>
@@ -133,6 +188,7 @@ const ApplicationForm = () => {
                 <Label htmlFor="cover">Cover Letter</Label>
                 <Textarea
                   id="cover"
+                  name="cover"
                   placeholder="Tell us why you're a great fit for this role..."
                   rows={5}
                 />
@@ -146,20 +202,24 @@ const ApplicationForm = () => {
                     {fileName || "Click to upload your CV (PDF, DOC, DOCX)"}
                   </span>
                   <input
+                    name="resume"
                     type="file"
                     className="hidden"
                     accept=".pdf,.doc,.docx"
                     required
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) setFileName(file.name);
+                      if (file) {
+                        setFileName(file.name);
+                        setResumeFile(file);
+                      }
                     }}
                   />
                 </label>
               </div>
 
-              <Button type="submit" variant="accent" size="lg" className="w-full">
-                Submit Application
+              <Button type="submit" variant="accent" size="lg" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Submitting..." : "Submit Application"}
               </Button>
             </form>
           </CardContent>

@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+# Spectrum Network Recruitment Portal 🛡️
 
-## Project info
+[![React](https://img.shields.io/badge/React-18.3-blue?logo=react)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind--CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-latest-black?logo=shadcnui)](https://ui.shadcn.com/)
+[![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?logo=php)](https://www.php.net/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?logo=mysql)](https://www.mysql.com/)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+A professional, high-fidelity recruitment portal built for **Spectrum Network International**. This portal manages job listings, applicant submissions, and features a full administrative dashboard for managing the recruitment pipeline.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Features
 
-**Use Lovable**
+- **Public Job Board**: Searchable and filterable job listings.
+- **Dynamic Application Form**: Support for detailed applicant info and CV/Resume uploads.
+- **Admin Dashboard**: 
+    - Real-time recruitment statistics.
+    - Application management (Reviewing, Shortlisting, Interviewing, etc.).
+    - Job listing management (Create, Edit, Publish).
+- **Backend Integration**: Custom PHP REST API connected to a secure MySQL database on cPanel.
+- **Responsive Design**: Optimized for mobile, tablet, and desktop viewing.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Tech Stack
 
-**Use your preferred IDE**
+### Frontend
+- **Framework**: React 18 (TypeScript)
+- **Styling**: Tailwind CSS with custom branding (Navy & Red)
+- **Components**: shadcn/ui + Lucide Icons
+- **Build Tool**: Vite
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Backend
+- **Language**: PHP (REST API)
+- **Database**: MySQL (hosted on cPanel)
+- **File Storage**: File system based CV storage
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📦 Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Prerequisites
+- Node.js (v18+)
+- PHP (v7.4+)
+- MySQL Database
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/IsaacZachary/spectrum-talent-hub.git
+   cd spectrum-talent-hub
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-**Edit a file directly in GitHub**
+3. **Configure the Database**:
+   - Update `api/config.php` with your database credentials.
+   - Run `api/seed.php` once to populate initial data.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+4. **Run Locally**:
+   ```bash
+   npm run dev
+   ```
 
-**Use GitHub Codespaces**
+5. **Build for Production**:
+   ```bash
+   npm run build
+   ```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🛡️ Administrative Access
+To access the admin dashboard, navigate to `/admin`.
+*(Note: In a production environment, ensure this route is protected by authentication or server-side redirects).*
 
-This project is built with:
+---
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📄 Documentation
+Detailed guides can be found in the `/docs` directory:
+- [Implementation Guide](./docs/IMPLEMENTATION.md)
+- [Stack Overview](./docs/STACK.md)
+- [Reusability & Collaboration](./docs/COLLABORATION.md)
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## ✨ Credits
+Special thanks to **Isaac Zachary** for the vision and coordination in bringing this portal to life for Spectrum Network International.
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+© 2026 Spectrum Network International. All rights reserved.

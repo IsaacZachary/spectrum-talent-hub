@@ -3,21 +3,38 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import JobCard from "@/components/JobCard";
 import PortalHeader from "@/components/PortalHeader";
-import { mockJobs } from "@/lib/mockData";
-import { useState, useMemo } from "react";
+import { Job } from "@/lib/types";
+import { api } from "@/lib/api";
+import { useState, useMemo, useEffect } from "react";
 
 const JobListings = () => {
   const [search, setSearch] = useState("");
   const [department, setDepartment] = useState("all");
   const [type, setType] = useState("all");
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const departments = useMemo(() => {
-    const depts = [...new Set(mockJobs.map((j) => j.department))];
-    return depts;
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const data = await api.getJobs();
+        setJobs(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchJobs();
   }, []);
 
+  const departments = useMemo(() => {
+    const depts = [...new Set(jobs.map((j) => j.department))];
+    return depts;
+  }, [jobs]);
+
   const filtered = useMemo(() => {
-    return mockJobs.filter((job) => {
+    return jobs.filter((job) => {
       const matchesSearch =
         !search ||
         job.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -26,7 +43,7 @@ const JobListings = () => {
       const matchesType = type === "all" || job.type === type;
       return matchesSearch && matchesDept && matchesType;
     });
-  }, [search, department, type]);
+  }, [search, department, type, jobs]);
 
   const openJobs = filtered.filter((j) => j.status === "open");
   const closedJobs = filtered.filter((j) => j.status === "closed");
@@ -34,7 +51,7 @@ const JobListings = () => {
   return (
     <div className="min-h-screen bg-background">
       <PortalHeader />
-      
+
       {/* Hero */}
       <section className="gradient-primary py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
