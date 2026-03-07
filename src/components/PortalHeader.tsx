@@ -26,7 +26,7 @@ const PortalHeader = () => {
               <div className="flex items-center gap-6">
                 <span className="flex items-center gap-2 group cursor-default">
                   <MapPin className="w-3.5 h-3.5 text-[#06A3DA] group-hover:scale-110 transition-transform" />
-                  Hazina Trade Centre, 14th Floor, Moktar Daddah Street, Nairobi
+                  Jacob Chege Drive, off Bogani Road, Karen
                 </span>
                 <span className="flex items-center gap-2 group cursor-default">
                   <Phone className="w-3.5 h-3.5 text-[#06A3DA] group-hover:scale-110 transition-transform" />
@@ -38,8 +38,15 @@ const PortalHeader = () => {
                 </span>
               </div>
               <div className="flex items-center gap-4">
-                <Link to="/admin" className="text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors">
-                  <Shield className="w-3.5 h-3.5" /> Client Portal
+                <div className="flex gap-3 pr-4 border-r border-white/10">
+                  <i className="fab fa-twitter hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-facebook-f hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-linkedin-in hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-instagram hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-youtube hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
+                </div>
+                <Link to="/admin" className="text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors font-bold uppercase tracking-widest text-[9px]">
+                  <Shield className="w-3 h-3" /> Admin
                 </Link>
               </div>
             </div>

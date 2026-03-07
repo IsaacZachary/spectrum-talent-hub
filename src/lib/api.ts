@@ -45,6 +45,22 @@ export const api = {
     return response.json();
   },
 
+  async updateJob(id: string, job: Partial<Job>): Promise<{ success: boolean }> {
+    const response = await fetch(`${API_BASE_URL}/jobs.php`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, ...job }),
+    });
+    return response.json();
+  },
+
+  async deleteJob(id: string): Promise<{ success: boolean }> {
+    const response = await fetch(`${API_BASE_URL}/jobs.php?id=${id}`, {
+      method: "DELETE",
+    });
+    return response.json();
+  },
+
   // Applications
   async getApplications(): Promise<Application[]> {
     const response = await fetch(`${API_BASE_URL}/applications.php`);

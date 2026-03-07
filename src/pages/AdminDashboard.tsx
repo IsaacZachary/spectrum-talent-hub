@@ -169,7 +169,7 @@ const AdminDashboard = () => {
                     <form className="p-8 space-y-6 -mt-6 bg-white rounded-t-[32px]" onSubmit={async (e) => {
                       e.preventDefault();
                       const formData = new FormData(e.currentTarget);
-                      const newJob = {
+                      const newJob: Partial<Job> = {
                         title: formData.get("title") as string,
                         department: formData.get("department") as string,
                         location: formData.get("location") as string,
@@ -373,12 +373,12 @@ const AdminDashboard = () => {
                             <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Industry / Dept</TableHead>
                             <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Contract</TableHead>
                             <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Visibility</TableHead>
-                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest text-right pr-8 py-4">Closing On</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest text-right pr-8 py-4">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {jobs.map((job) => (
-                            <TableRow key={job.id} className="group hover:bg-slate-50/50 border-slate-50 transition-colors">
+                            <TableRow key={job.id} className="group hover:bg-slate-50/50 border-slate-50 transition-colors text-slate-900">
                               <TableCell className="pl-8 py-5">
                                 <div className="space-y-0.5">
                                   <p className="font-bold text-[#091E3E]">{job.title}</p>
@@ -392,8 +392,62 @@ const AdminDashboard = () => {
                                   {job.status === "open" ? "Public" : "Archived"}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="text-right pr-8 text-xs font-bold text-slate-400">
-                                {new Date(job.closingDate).toLocaleDateString()}
+                              <TableCell className="text-right pr-8">
+                                <div className="flex justify-end gap-2">
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-[#06A3DA]">
+                                        <Settings className="h-4 w-4" />
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-md bg-white rounded-2xl p-6 text-slate-900">
+                                      <DialogTitle className="text-xl font-bold text-[#091E3E] mb-4">Edit Role</DialogTitle>
+                                      <form className="space-y-4" onSubmit={async (e) => {
+                                        e.preventDefault();
+                                        const fd = new FormData(e.currentTarget);
+                                        const update: Partial<Job> = {
+                                          title: fd.get("title") as string,
+                                          department: fd.get("department") as string,
+                                          status: fd.get("status") as any,
+                                          closingDate: fd.get("closingDate") as string
+                                        };
+                                        try {
+                                          await api.updateJob(job.id, update);
+                                          toast.success("Saved");
+                                          const refreshed = await api.getJobs();
+                                          setJobs(refreshed);
+                                        } catch (e) { toast.error("Fail"); }
+                                      }}>
+                                        <div className="space-y-3">
+                                          <Input name="title" defaultValue={job.title} placeholder="Title" />
+                                          <Input name="department" defaultValue={job.department} placeholder="Department" />
+                                          <Select name="status" defaultValue={job.status}>
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="open">Open</SelectItem>
+                                              <SelectItem value="closed">Closed</SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                        </div>
+                                        <Button type="submit" className="w-full bg-[#091E3E] mt-4">Save</Button>
+                                      </form>
+                                    </DialogContent>
+                                  </Dialog>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-slate-300 hover:text-red-500"
+                                    onClick={async () => {
+                                      if (confirm("Delete Listing?")) {
+                                        await api.deleteJob(job.id);
+                                        toast.success("Deleted");
+                                        setJobs(prev => prev.filter(j => j.id !== job.id));
+                                      }
+                                    }}
+                                  >
+                                    <LogOut className="h-4 w-4 rotate-90" />
+                                  </Button>
+                                </div>
                               </TableCell>
                             </TableRow>
                           ))}

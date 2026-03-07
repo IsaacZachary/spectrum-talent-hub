@@ -108,8 +108,8 @@ export function PortalFooter() {
                         <p className="mb-0">
                             &copy; 2024 <a href="#" className="text-white hover:text-[#06A3DA]">Spectrum Network International</a>. All Rights Reserved.
                         </p>
-                        <p className="mb-0 text-xs">
-                            Designed by <span className="text-slate-300">Bahati</span> | Powered by Fine Technology
+                        <p className="mb-0 text-xs text-slate-400 capitalize">
+                            Designed by <span className="text-slate-300">Bahati</span> | Developed by <a href="https://izach.netlify.app/contact" target="_blank" rel="noopener noreferrer" className="text-[#06A3DA] hover:underline font-bold">IZACH</a>
                         </p>
                     </div>
                 </div>

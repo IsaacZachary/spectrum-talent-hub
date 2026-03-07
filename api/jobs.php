@@ -49,5 +49,33 @@ if ($method === 'GET') {
         http_response_code(500);
         echo json_encode(['error' => $e->getMessage()]);
     }
+} elseif ($method === 'PUT') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $id = $data['id'];
+    
+    $stmt = $pdo->prepare("UPDATE jobs SET title = ?, department = ?, status = ?, closingDate = ? WHERE id = ?");
+    try {
+        $stmt->execute([
+            $data['title'],
+            $data['department'],
+            $data['status'],
+            $data['closingDate'],
+            $id
+        ]);
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+} elseif ($method === 'DELETE') {
+    $id = $_GET['id'];
+    $stmt = $pdo->prepare("DELETE FROM jobs WHERE id = ?");
+    try {
+        $stmt->execute([$id]);
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => $e->getMessage()]);
+    }
 }
 ?>
