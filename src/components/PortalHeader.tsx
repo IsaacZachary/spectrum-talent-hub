@@ -25,25 +25,25 @@ const PortalHeader = () => {
             <div className="container mx-auto px-4 lg:px-8 flex items-center justify-between h-11 text-[11px] font-medium tracking-wide text-slate-300">
               <div className="flex items-center gap-6">
                 <span className="flex items-center gap-2 group cursor-default">
-                  <MapPin className="w-3.5 h-3.5 text-[#06A3DA] group-hover:scale-110 transition-transform" />
+                  <MapPin className="w-3.5 h-3.5 text-[#E43A3A] group-hover:scale-110 transition-transform" />
                   Jacob Chege Drive, off Bogani Road, Karen
                 </span>
                 <span className="flex items-center gap-2 group cursor-default">
-                  <Phone className="w-3.5 h-3.5 text-[#06A3DA] group-hover:scale-110 transition-transform" />
+                  <Phone className="w-3.5 h-3.5 text-[#E43A3A] group-hover:scale-110 transition-transform" />
                   +254 700 159 614
                 </span>
                 <span className="flex items-center gap-2 group cursor-default">
-                  <Mail className="w-3.5 h-3.5 text-[#06A3DA] group-hover:scale-110 transition-transform" />
+                  <Mail className="w-3.5 h-3.5 text-[#E43A3A] group-hover:scale-110 transition-transform" />
                   info@spectrumnetworkpi.com
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex gap-3 pr-4 border-r border-white/10">
-                  <i className="fab fa-twitter hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
-                  <i className="fab fa-facebook-f hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
-                  <i className="fab fa-linkedin-in hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
-                  <i className="fab fa-instagram hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
-                  <i className="fab fa-youtube hover:text-[#06A3DA] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-twitter hover:text-[#E43A3A] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-facebook-f hover:text-[#E43A3A] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-linkedin-in hover:text-[#E43A3A] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-instagram hover:text-[#E43A3A] transition-colors cursor-pointer"></i>
+                  <i className="fab fa-youtube hover:text-[#E43A3A] transition-colors cursor-pointer"></i>
                 </div>
                 <Link to="/admin" className="text-slate-400 hover:text-white flex items-center gap-1.5 transition-colors font-bold uppercase tracking-widest text-[9px]">
                   <Shield className="w-3 h-3" /> Admin
@@ -72,7 +72,7 @@ const PortalHeader = () => {
             <NavItem href="https://spectrumnetworkpi.com/contact.html" label="Contact" isScrolled={isScrolled} />
 
             <div className="flex items-center gap-3 ml-6 pl-6 border-l border-slate-200">
-              <a href="https://spectrumnetworkpi.com/Background%20checks.html" className="bg-[#06A3DA] hover:bg-[#058dbd] text-white px-5 py-2.5 rounded font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95">
+              <a href="https://spectrumnetworkpi.com/Background%20checks.html" className="bg-[#E43A3A] hover:bg-[#c02a2a] text-white px-5 py-2.5 rounded font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95">
                 Background Checks
               </a>
               <Link to="/" className="bg-[#091E3E] hover:bg-[#071833] text-white px-5 py-2.5 rounded font-bold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95">
@@ -98,7 +98,7 @@ const PortalHeader = () => {
 const NavItem = ({ href, label, isScrolled }: { href: string; label: string; isScrolled: boolean }) => (
   <a
     href={href}
-    className={`px-4 h-full flex items-center font-bold text-sm tracking-wide transition-all duration-300 border-b-2 border-transparent hover:border-[#06A3DA] hover:text-[#06A3DA] ${isScrolled ? 'text-[#091E3E]' : 'text-[#091E3E]'}`}
+    className={`px-4 h-full flex items-center font-bold text-sm tracking-wide transition-all duration-300 border-b-2 border-transparent hover:border-[#E43A3A] hover:text-[#E43A3A] ${isScrolled ? 'text-[#091E3E]' : 'text-[#091E3E]'}`}
   >
     {label}
   </a>

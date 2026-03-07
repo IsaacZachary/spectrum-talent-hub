@@ -42,8 +42,17 @@ try {
     die("<h1>Database Setup Failed</h1> <p>" . $e->getMessage() . "</p>");
 }
 
+// Allow force reseed via ?force=1
+$force = isset($_GET['force']) && $_GET['force'] === '1';
+
+if ($force) {
+    // Remove test/dummy data only
+    $pdo->exec("DELETE FROM jobs WHERE title = 'test' OR description = 'eedsaf' OR department = 'res'");
+    echo "<h3>Dummy jobs cleared.</h3>";
+}
+
 // Check if job already exists
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM jobs");
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM jobs WHERE id = 'seed_job_001'");
 $stmt->execute();
 $count = $stmt->fetchColumn();
 
@@ -92,10 +101,10 @@ if ($count == 0) {
         date('Y-m-d', strtotime('+30 days'))
     ]);
     
-    echo "<h2>First Job Created: " . $jobTitle . "</h2>";
+    echo "<h2 style='color:green'>✅ Seed Job Created: " . $jobTitle . "</h2>";
 } else {
-    echo "<h2>Jobs already exist in database. No new seed added.</h2>";
+    echo "<h2>Seed job already exists. Use <a href='?force=1'>?force=1</a> to clean dummy data.</h2>";
 }
 
-echo "<br><a href='/recruitment/'>Visit Recruitment Portal</a>";
+echo "<br><a href='/recruitment/' style='font-size:18px'>→ Visit Recruitment Portal</a>";
 ?>
