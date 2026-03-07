@@ -194,10 +194,10 @@ const JobListings = () => {
               </p>
             </div>
             <a
-              href="mailto:info@spectrumnetworkpi.com"
+              href="mailto:hr@spectrumnetworkpi.com?subject=Open Application – Spectrum Network International&body=Dear Hiring Team,%0A%0APlease find attached my CV for consideration for any suitable positions at Spectrum Network International.%0A%0AKind regards,"
               className="px-8 py-4 bg-[#091E3E] text-white rounded-lg font-bold hover:shadow-xl transition-all whitespace-nowrap active:scale-95"
             >
-              Send Your CV / Profile
+              Send Your CV / Profile →
             </a>
           </div>
 

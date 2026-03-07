@@ -1,7 +1,11 @@
 <?php
 require_once 'config.php';
+header('Content-Type: text/html; charset=utf-8');
 
-// Table Creation SQL
+echo "<!DOCTYPE html><html><head><style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:20px;} .ok{color:green;} .warn{color:orange;} .err{color:red;}</style></head><body>";
+echo "<h2>🌱 Spectrum Network – Job Seeder</h2>";
+
+// Step 1: Create tables if needed
 $sql = "
 CREATE TABLE IF NOT EXISTS jobs (
     id VARCHAR(50) PRIMARY KEY,
@@ -37,74 +41,140 @@ CREATE TABLE IF NOT EXISTS applications (
 
 try {
     $pdo->exec($sql);
-    echo "<h1>Database Setup Successful</h1>";
+    echo "<p class='ok'>✅ Tables ready.</p>";
 } catch (PDOException $e) {
-    die("<h1>Database Setup Failed</h1> <p>" . $e->getMessage() . "</p>");
+    echo "<p class='err'>❌ Table error: " . $e->getMessage() . "</p>";
+    exit;
 }
 
-// Allow force reseed via ?force=1
+// Step 2: Force clear dummy/test jobs if ?force=1
 $force = isset($_GET['force']) && $_GET['force'] === '1';
-
 if ($force) {
-    // Remove test/dummy data AND old seed to force fresh insert
-    $pdo->exec("DELETE FROM jobs WHERE title = 'test' OR description = 'eedsaf' OR department = 'res' OR id = 'seed_job_001'");
-    echo "<h3 style='color:orange'>⚠️ Dummy + old seed jobs cleared. Inserting fresh seed...</h3>";
+    $pdo->exec("DELETE FROM jobs WHERE 
+        title = 'test' OR 
+        department = 'res' OR 
+        LENGTH(title) < 5 OR
+        description IS NULL OR description = '' OR description = 'eedsaf'
+    ");
+    echo "<p class='warn'>⚠️ Dummy jobs cleared.</p>";
 }
 
-// Check if job already exists
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM jobs WHERE id = 'seed_job_001'");
-$stmt->execute();
-$count = $stmt->fetchColumn();
+// Step 3: Define real jobs
+$jobs = [
+    [
+        'id'              => 'snp_job_junior_inv_2026',
+        'title'           => 'Junior Investigator',
+        'department'      => 'Investigations',
+        'location'        => 'Nairobi, Kenya',
+        'type'            => 'Full-time',
+        'salary'          => 'Competitive + Benefits',
+        'description'     => 'Spectrum Network International is now hiring a smart, detail-oriented Junior Investigator to join our investigations team. If you have a background in criminology or related fields and strong investigative skills, this is your opportunity to build a meaningful career in intelligence and risk management.',
+        'requirements'    => json_encode([
+            'Diploma or Bachelor\'s Degree in Criminology, Security Studies, Criminal Justice, or a related field',
+            '1–2 years experience in a reputable investigation firm (fresh graduates with strong internship experience considered)',
+            'Strong knowledge of surveillance operations and handling high-risk cases',
+            'Professional certification in Cybersecurity or related fields (added advantage)',
+            'Excellent command of English (both written and verbal)',
+            'Highly computer literate',
+            'Proven track record of conducting reliable and professional investigations',
+        ]),
+        'responsibilities' => json_encode([
+            'Conducting employee background checks and corporate vetting',
+            'Assisting senior investigators in fraud and intelligence cases',
+            'Performing surveillance and field operations',
+            'Writing accurate and timely investigation reports',
+            'Maintaining confidentiality and evidence integrity',
+            'Liaising with law enforcement agencies where required',
+        ]),
+        'benefits'        => json_encode([
+            'Competitive salary with performance bonuses',
+            'Professional training and development',
+            'Exposure to complex, high-profile investigations',
+            'Career growth in Africa\'s leading PI firm',
+            'Medical cover',
+        ]),
+        'status'          => 'open',
+        'closingDate'     => date('Y-m-d', strtotime('+45 days')),
+    ],
+    [
+        'id'              => 'snp_job_debt_collector_2026',
+        'title'           => 'Virtual Debt Collector',
+        'department'      => 'Debt Recovery',
+        'location'        => 'Remote (Kenya)',
+        'type'            => 'Contract',
+        'salary'          => 'Commission-Based + Retainer',
+        'description'     => 'Spectrum Network International is seeking driven and persuasive Virtual Debt Collectors to join our Debt Recovery division. This is a remote-first opportunity ideal for individuals who are available immediately and have a working laptop.',
+        'requirements'    => json_encode([
+            'Diploma holder or higher (any field)',
+            'Must have a working laptop with stable internet access',
+            'Available to start immediately',
+            'Experience in debt collection or credit recovery is an added advantage',
+            'Strong communication and negotiation skills',
+            'Ability to handle high call volumes and manage follow-ups',
+        ]),
+        'responsibilities' => json_encode([
+            'Contacting debtors via phone, email, and messaging platforms',
+            'Negotiating repayment plans in line with company policy',
+            'Maintaining accurate records of all collection activities',
+            'Reporting daily collection progress to line manager',
+            'Escalating unresolved cases to senior recovery agents',
+        ]),
+        'benefits'        => json_encode([
+            'Work from anywhere (fully remote)',
+            'Attractive commission structure',
+            'Flexible work hours',
+            'Fast onboarding – start within days',
+            'Growth potential into permanent roles',
+        ]),
+        'status'          => 'open',
+        'closingDate'     => date('Y-m-d', strtotime('+30 days')),
+    ],
+];
 
-if ($count == 0) {
-    $jobTitle = "Junior Private Investigator";
-    $jobDept = "Investigations";
-    $jobLocation = "Nairobi CBD";
-    $jobDescription = "Spectrum Network International is seeking a junior investigator to join our corporate fraud and vetting team. This entry-level role involves fieldwork, document verification, and support for primary investigators.";
-    
-    $requirements = [
-        "Certificate/Diploma in Criminology or related field",
-        "Clean record with certificate of good conduct",
-        "Excellent communication skills",
-        "Valid driving/motorbike license is an added advantage"
-    ];
-    
-    $responsibilities = [
-        "Conducting document verification for employee vetting",
-        "Assisting in corporate fraud investigations",
-        "Writing daily activity reports",
-        "Maintaining case records and evidence files"
-    ];
-    
-    $benefits = [
-        "Professional growth and training",
-        "Competitive stipend",
-        "Performance bonuses",
-        "Exposure to complex corporate cases"
-    ];
+// Step 4: Insert jobs using INSERT IGNORE (safe, won't duplicate)
+$stmt = $pdo->prepare("
+    INSERT IGNORE INTO jobs 
+        (id, title, department, location, type, salary, description, requirements, responsibilities, benefits, status, closingDate) 
+    VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+");
 
-    $stmt = $pdo->prepare("INSERT INTO jobs (id, title, department, location, type, salary, description, requirements, responsibilities, benefits, status, closingDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    
-    $jobId = "seed_job_001";
-    $stmt->execute([
-        $jobId,
-        $jobTitle,
-        $jobDept,
-        $jobLocation,
-        "Full-time",
-        "Competitive",
-        $jobDescription,
-        json_encode($requirements),
-        json_encode($responsibilities),
-        json_encode($benefits),
-        "open",
-        date('Y-m-d', strtotime('+30 days'))
-    ]);
-    
-    echo "<h2 style='color:green'>✅ Seed Job Created: " . $jobTitle . "</h2>";
-} else {
-    echo "<h2>Seed job already exists. Use <a href='?force=1'>?force=1</a> to clean dummy data.</h2>";
+$inserted = 0;
+$skipped  = 0;
+foreach ($jobs as $job) {
+    try {
+        $result = $stmt->execute([
+            $job['id'],
+            $job['title'],
+            $job['department'],
+            $job['location'],
+            $job['type'],
+            $job['salary'],
+            $job['description'],
+            $job['requirements'],
+            $job['responsibilities'],
+            $job['benefits'],
+            $job['status'],
+            $job['closingDate'],
+        ]);
+        if ($stmt->rowCount() > 0) {
+            echo "<p class='ok'>✅ Job Added: <strong>{$job['title']}</strong> ({$job['department']})</p>";
+            $inserted++;
+        } else {
+            echo "<p class='warn'>⏭️ Already exists, skipped: <strong>{$job['title']}</strong> — use <a href='?force=1'>?force=1</a> then reload to re-seed.</p>";
+            $skipped++;
+        }
+    } catch (PDOException $e) {
+        echo "<p class='err'>❌ Failed to add {$job['title']}: " . $e->getMessage() . "</p>";
+    }
 }
 
-echo "<br><a href='/recruitment/' style='font-size:18px'>→ Visit Recruitment Portal</a>";
+// Step 5: Show summary
+$countStmt = $pdo->query("SELECT COUNT(*) FROM jobs WHERE status = 'open'");
+$total = $countStmt->fetchColumn();
+
+echo "<hr>";
+echo "<p><strong>Summary:</strong> {$inserted} job(s) inserted, {$skipped} skipped. Total open jobs in DB: <strong>{$total}</strong></p>";
+echo "<p><a href='/recruitment/' style='font-size:18px;color:#E43A3A;font-weight:bold'>→ Visit Recruitment Portal</a></p>";
+echo "</body></html>";
 ?>
