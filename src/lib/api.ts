@@ -5,13 +5,24 @@ const API_BASE_URL = "/recruitment/api"; // Adjusted for subfolder deployment
 export const api = {
   // Jobs
   async getJobs(): Promise<Job[]> {
-    const response = await fetch(`${API_BASE_URL}/jobs.php`);
-    if (!response.ok) throw new Error("Failed to fetch jobs");
-    const data = await response.json();
-    return data.map((job: any) => ({
-      ...job,
-      requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements) : job.requirements
-    }));
+    try {
+      const response = await fetch(`${API_BASE_URL}/jobs.php`);
+      if (!response.ok) throw new Error("Failed to fetch jobs");
+      const data = await response.json();
+      if (!Array.isArray(data)) {
+        console.error("API Error:", data);
+        return [];
+      }
+      return data.map((job: any) => ({
+        ...job,
+        responsibilities: JSON.parse(job.responsibilities || "[]"),
+        requirements: JSON.parse(job.requirements || "[]"),
+        benefits: JSON.parse(job.benefits || "[]"),
+      }));
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      return [];
+    }
   },
 
   async getJob(id: string): Promise<Job> {
@@ -20,7 +31,9 @@ export const api = {
     const job = await response.json();
     return {
       ...job,
-      requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements) : job.requirements
+      requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements || "[]") : job.requirements,
+      responsibilities: typeof job.responsibilities === 'string' ? JSON.parse(job.responsibilities || "[]") : job.responsibilities,
+      benefits: typeof job.benefits === 'string' ? JSON.parse(job.benefits || "[]") : job.benefits
     };
   },
 

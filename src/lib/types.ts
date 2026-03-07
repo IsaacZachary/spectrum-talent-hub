@@ -7,6 +7,8 @@ export interface Job {
   salary: string;
   description: string;
   requirements: string[];
+  responsibilities: string[];
+  benefits: string[];
   postedDate: string;
   closingDate: string;
   status: "open" | "closed" | "draft";

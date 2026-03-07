@@ -1,60 +1,101 @@
 <?php
 require_once 'config.php';
 
-$jobs = [
-    [
-        'id' => 'job_1',
-        'title' => 'Security Analyst',
-        'department' => 'Risk Management',
-        'location' => 'Nairobi, Kenya',
-        'type' => 'Full-time',
-        'salary' => 'KES 120k - 180k',
-        'description' => 'We are looking for a Security Analyst to join our risk management team...',
-        'requirements' => json_encode(['Degree in CS/Security', '3+ years experience', 'CISSP preferred']),
-        'postedDate' => date('Y-m-d H:i:s'),
-        'closingDate' => date('Y-m-d H:i:s', strtotime('+30 days')),
-        'status' => 'open'
-    ],
-    [
-        'id' => 'job_2',
-        'title' => 'Private Investigator',
-        'department' => 'Investigations',
-        'location' => 'Mombasa, Kenya',
-        'type' => 'Contract',
-        'salary' => 'Competitive',
-        'description' => 'Conducting field investigations and gathering intelligence...',
-        'requirements' => json_encode(['Previous law enforcement experience preferred', 'Valid driving license', 'Discreet and professional']),
-        'postedDate' => date('Y-m-d H:i:s'),
-        'closingDate' => date('Y-m-d H:i:s', strtotime('+15 days')),
-        'status' => 'open'
-    ],
-    [
-        'id' => 'job_3',
-        'title' => 'Junior Investigator',
-        'department' => 'Investigations',
-        'location' => 'Nairobi, Kenya',
-        'type' => 'Full-time',
-        'salary' => 'Competitive',
-        'description' => 'Spectrum Network International is looking for a Junior Investigator to join our professional investigations team. The ideal candidate will have a strong foundation in security studies and a proven track record of professional conduct.',
-        'requirements' => json_encode([
-            "Diploma or Bachelor's Degree in Criminology, Security Studies, Criminal Justice, or a related field",
-            "1-2 years experience in a reputable investigation firm",
-            "Strong knowledge of surveillance operations and handling high-risk cases",
-            "Professional certification in Cybersecurity or related fields (added advantage)",
-            "Excellent command of English (both written and verbal)",
-            "Highly computer literate",
-            "Proven track record of conducting reliable and professional investigations"
-        ]),
-        'postedDate' => date('Y-m-d H:i:s'),
-        'closingDate' => date('Y-m-d H:i:s', strtotime('+45 days')),
-        'status' => 'open'
-    ]
-];
+// Table Creation SQL
+$sql = "
+CREATE TABLE IF NOT EXISTS jobs (
+    id VARCHAR(50) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    department VARCHAR(100),
+    location VARCHAR(100),
+    type ENUM('Full-time', 'Part-time', 'Contract', 'Temporary') DEFAULT 'Full-time',
+    salary VARCHAR(100),
+    description TEXT,
+    requirements TEXT,
+    responsibilities TEXT DEFAULT '[]',
+    benefits TEXT DEFAULT '[]',
+    status ENUM('open', 'closed') DEFAULT 'open',
+    postedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    closingDate DATE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-foreach ($jobs as $job) {
-    $stmt = $pdo->prepare("INSERT INTO jobs (id, title, department, location, type, salary, description, requirements, postedDate, closingDate, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE title=VALUES(title)");
-    $stmt->execute(array_values($job));
+CREATE TABLE IF NOT EXISTS applications (
+    id VARCHAR(50) PRIMARY KEY,
+    jobId VARCHAR(50),
+    jobTitle VARCHAR(255),
+    applicantName VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    cvPath VARCHAR(255),
+    resumeUrl VARCHAR(255),
+    coverLetter TEXT,
+    status ENUM('new', 'reviewing', 'shortlisted', 'interview', 'offered', 'hired', 'rejected') DEFAULT 'new',
+    appliedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (jobId) REFERENCES jobs(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+";
+
+try {
+    $pdo->exec($sql);
+    echo "<h1>Database Setup Successful</h1>";
+} catch (PDOException $e) {
+    die("<h1>Database Setup Failed</h1> <p>" . $e->getMessage() . "</p>");
 }
 
-echo json_encode(['success' => true, 'message' => 'Seeded ' . count($jobs) . ' jobs']);
+// Check if job already exists
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM jobs");
+$stmt->execute();
+$count = $stmt->fetchColumn();
+
+if ($count == 0) {
+    $jobTitle = "Junior Private Investigator";
+    $jobDept = "Investigations";
+    $jobLocation = "Nairobi CBD";
+    $jobDescription = "Spectrum Network International is seeking a junior investigator to join our corporate fraud and vetting team. This entry-level role involves fieldwork, document verification, and support for primary investigators.";
+    
+    $requirements = [
+        "Certificate/Diploma in Criminology or related field",
+        "Clean record with certificate of good conduct",
+        "Excellent communication skills",
+        "Valid driving/motorbike license is an added advantage"
+    ];
+    
+    $responsibilities = [
+        "Conducting document verification for employee vetting",
+        "Assisting in corporate fraud investigations",
+        "Writing daily activity reports",
+        "Maintaining case records and evidence files"
+    ];
+    
+    $benefits = [
+        "Professional growth and training",
+        "Competitive stipend",
+        "Performance bonuses",
+        "Exposure to complex corporate cases"
+    ];
+
+    $stmt = $pdo->prepare("INSERT INTO jobs (id, title, department, location, type, salary, description, requirements, responsibilities, benefits, status, closingDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    
+    $jobId = "seed_job_001";
+    $stmt->execute([
+        $jobId,
+        $jobTitle,
+        $jobDept,
+        $jobLocation,
+        "Full-time",
+        "Competitive",
+        $jobDescription,
+        json_encode($requirements),
+        json_encode($responsibilities),
+        json_encode($benefits),
+        "open",
+        date('Y-m-d', strtotime('+30 days'))
+    ]);
+    
+    echo "<h2>First Job Created: " . $jobTitle . "</h2>";
+} else {
+    echo "<h2>Jobs already exist in database. No new seed added.</h2>";
+}
+
+echo "<br><a href='/recruitment/'>Visit Recruitment Portal</a>";
 ?>
