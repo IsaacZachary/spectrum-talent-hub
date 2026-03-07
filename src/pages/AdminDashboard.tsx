@@ -388,7 +388,18 @@ const AdminDashboard = () => {
                               <TableCell className="text-sm font-semibold text-[#091E3E] uppercase tracking-wider text-[11px]">{job.department}</TableCell>
                               <TableCell className="text-sm font-medium text-slate-500">{job.type}</TableCell>
                               <TableCell>
-                                <Badge className={job.status === "open" ? "bg-[#06A3DA] text-white" : "bg-slate-100 text-slate-400 border-none"} variant="default">
+                                <Badge
+                                  className={`${job.status === "open" ? "bg-[#06A3DA] text-white" : "bg-slate-100 text-slate-400 border-none"} cursor-pointer hover:scale-105 transition-transform`}
+                                  variant="default"
+                                  onClick={async () => {
+                                    const newStat = job.status === "open" ? "closed" : "open";
+                                    try {
+                                      await api.updateJob(job.id, { status: newStat as any });
+                                      setJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: newStat as any } : j));
+                                      toast.success(`Position ${newStat === 'open' ? 'Published' : 'Archived'}`);
+                                    } catch (e) { toast.error("Toggle failed"); }
+                                  }}
+                                >
                                   {job.status === "open" ? "Public" : "Archived"}
                                 </Badge>
                               </TableCell>

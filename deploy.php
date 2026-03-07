@@ -17,6 +17,10 @@ function rcopy($src, $dst) {
     }
 }
 
+// Nuclear clean before copying to avoid Git locks
+if (file_exists(__DIR__ . '/index.html')) unlink(__DIR__ . '/index.html');
+if (file_exists(__DIR__ . '/.htaccess')) unlink(__DIR__ . '/.htaccess');
+
 rcopy($source, $dest);
 
 // Now write the correct .htaccess
@@ -33,7 +37,6 @@ $htaccess = <<<EOF
 EOF;
 
 file_put_contents(__DIR__ . '/.htaccess', $htaccess);
-echo "<h1 style='color:green;font-family:sans-serif'>✅ Deployment complete!</h1>";
-echo "<p>Files from <code>build/</code> have been copied to the recruitment root.</p>";
-echo "<p><strong>IMPORTANT:</strong> Delete this file now: <code>deploy.php</code></p>";
+echo "<h1 style='color:green;font-family:sans-serif'>🚀 Nuclear Deployment Successful!</h1>";
+echo "<p>Conflicts cleared. Files from <code>build/</code> are now live.</p>";
 echo "<p><a href='/recruitment'>→ Visit the portal</a></p>";

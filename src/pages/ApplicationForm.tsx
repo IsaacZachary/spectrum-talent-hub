@@ -103,7 +103,8 @@ const ApplicationForm = () => {
         resumeUrl = uploadRes.url;
       }
 
-      const formData = new FormData(e.currentTarget);
+      const target = e.target as HTMLFormElement;
+      const formData = new FormData(target);
       const applicationData = {
         jobId: job.id,
         jobTitle: job.title,
