@@ -70,9 +70,9 @@ const AdminDashboard = () => {
   }, [isAuthenticated]);
 
   const stats = [
-    { label: "Active Jobs", value: jobs.filter((j) => j.status === "open").length, icon: Briefcase, color: "text-[#06A3DA]", bg: "bg-[#06A3DA]/10" },
+    { label: "Active Jobs", value: jobs.filter((j) => j.status === "open").length, icon: Briefcase, color: "text-[#E43A3A]", bg: "bg-[#E43A3A]/10" },
     { label: "Total Applications", value: applications.length, icon: FileText, color: "text-[#091E3E]", bg: "bg-slate-100" },
-    { label: "New Candidates", value: applications.filter((a) => a.status === "new").length, icon: TrendingUp, color: "text-[#06A3DA]", bg: "bg-[#06A3DA]/10" },
+    { label: "New Candidates", value: applications.filter((a) => a.status === "new").length, icon: TrendingUp, color: "text-[#E43A3A]", bg: "bg-[#E43A3A]/10" },
     { label: "Shortlisted", value: applications.filter((a) => a.status === "shortlisted").length, icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
   ];
 
@@ -95,7 +95,7 @@ const AdminDashboard = () => {
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden transform transition-all hover:shadow-2xl">
           <div className="bg-[#091E3E] p-8 text-center text-white">
-            <div className="w-16 h-16 bg-[#06A3DA] rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg rotate-3">
+            <div className="w-16 h-16 bg-[#E43A3A] rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg rotate-3">
               <Lock className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold uppercase tracking-tight">Admin Gateway</h1>
@@ -112,17 +112,17 @@ const AdminDashboard = () => {
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   placeholder="••••"
-                  className="text-center text-3xl h-16 tracking-[1em] focus:ring-[#06A3DA]/20 focus:border-[#06A3DA] border-slate-200"
+                  className="text-center text-3xl h-16 tracking-[1em] focus:ring-[#E43A3A]/20 focus:border-[#E43A3A] border-slate-200"
                   maxLength={4}
                   autoFocus
                 />
               </div>
-              <Button type="submit" className="w-full h-12 bg-[#06A3DA] hover:bg-[#058dbd] text-white font-bold tracking-widest uppercase transition-all shadow-md active:scale-95">
+              <Button type="submit" className="w-full h-12 bg-[#E43A3A] hover:bg-[#c02a2a] text-white font-bold tracking-widest uppercase transition-all shadow-md active:scale-95">
                 Unlock Dashboard
               </Button>
             </form>
             <div className="mt-8 text-center">
-              <a href="/" className="text-xs text-slate-400 hover:text-[#06A3DA] font-semibold transition-colors flex items-center justify-center gap-1">
+              <a href="/" className="text-xs text-slate-400 hover:text-[#E43A3A] font-semibold transition-colors flex items-center justify-center gap-1">
                 <ChevronRight className="w-3 h-3 rotate-180" /> Back to Career Portal
               </a>
             </div>
@@ -142,7 +142,7 @@ const AdminDashboard = () => {
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div className="space-y-1">
-                <div className="flex items-center gap-2 text-[#06A3DA] font-bold text-xs uppercase tracking-widest mb-2 bg-[#06A3DA]/10 px-3 py-1 rounded w-fit">
+                <div className="flex items-center gap-2 text-[#E43A3A] font-bold text-xs uppercase tracking-widest mb-2 bg-[#E43A3A]/10 px-3 py-1 rounded w-fit">
                   <ShieldCheck className="w-3.5 h-3.5" /> Secure Admin Session
                 </div>
                 <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">Recruitment Control Panel</h1>
@@ -154,14 +154,14 @@ const AdminDashboard = () => {
                 </Button>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="bg-[#06A3DA] hover:bg-[#058dbd] text-white h-11 px-6 font-bold shadow-lg">
+                    <Button className="bg-[#E43A3A] hover:bg-[#c02a2a] text-white h-11 px-6 font-bold shadow-lg">
                       <Plus className="h-5 w-5 mr-2" /> Post Job
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl bg-white rounded-2xl shadow-2xl p-0 overflow-hidden border-none animate-in zoom-in-95 duration-200">
                     <div className="bg-[#091E3E] p-6 text-white pb-10">
                       <h2 className="text-2xl font-bold flex items-center gap-3">
-                        <Briefcase className="w-6 h-6 text-[#06A3DA]" />
+                        <Briefcase className="w-6 h-6 text-[#E43A3A]" />
                         New Job Opportunity
                       </h2>
                       <p className="text-white/60 text-sm mt-1">This will be published instantly on the careers portal.</p>
@@ -191,15 +191,15 @@ const AdminDashboard = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="space-y-2 col-span-full">
                           <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Job Title</Label>
-                          <Input name="title" placeholder="e.g. Senior Security Analyst" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                          <Input name="title" placeholder="e.g. Senior Security Analyst" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" required />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Department</Label>
-                          <Input name="department" placeholder="e.g. Investigations" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                          <Input name="department" placeholder="e.g. Investigations" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" required />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Location</Label>
-                          <Input name="location" placeholder="e.g. Nairobi CBD" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                          <Input name="location" placeholder="e.g. Nairobi CBD" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" required />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Job Type</Label>
@@ -214,14 +214,14 @@ const AdminDashboard = () => {
                         </div>
                         <div className="space-y-2">
                           <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Closing Date</Label>
-                          <Input name="closingDate" type="date" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" />
+                          <Input name="closingDate" type="date" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Summary / Description</Label>
-                        <Textarea name="description" rows={4} placeholder="Key role overview..." className="border-slate-200 focus:border-[#06A3DA] rounded-lg resize-none" required />
+                        <Textarea name="description" rows={4} placeholder="Key role overview..." className="border-slate-200 focus:border-[#E43A3A] rounded-lg resize-none" required />
                       </div>
-                      <Button type="submit" size="lg" className="w-full bg-[#091E3E] hover:bg-[#06A3DA] text-white font-bold tracking-widest uppercase transition-all h-14 rounded-xl shadow-lg">
+                      <Button type="submit" size="lg" className="w-full bg-[#091E3E] hover:bg-[#E43A3A] text-white font-bold tracking-widest uppercase transition-all h-14 rounded-xl shadow-lg">
                         Publish Opportunity
                       </Button>
                     </form>
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
           {/* Top Line Stats */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-10">
             {stats.map((stat) => (
-              <Card key={stat.label} className="border-slate-100 hover:border-[#06A3DA]/20 transition-all group overflow-hidden bg-white shadow-sm hover:shadow-md rounded-2xl">
+              <Card key={stat.label} className="border-slate-100 hover:border-[#E43A3A]/20 transition-all group overflow-hidden bg-white shadow-sm hover:shadow-md rounded-2xl">
                 <CardContent className="flex items-center gap-5 p-6">
                   <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} transition-all duration-300 group-hover:scale-110`}>
                     <stat.icon className="h-7 w-7" />
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
                               <TableCell className="text-sm font-medium text-slate-500">{job.type}</TableCell>
                               <TableCell>
                                 <Badge
-                                  className={`${job.status === "open" ? "bg-[#06A3DA] text-white" : "bg-slate-100 text-slate-400 border-none"} cursor-pointer hover:scale-105 transition-transform`}
+                                  className={`${job.status === "open" ? "bg-[#E43A3A] text-white" : "bg-slate-100 text-slate-400 border-none"} cursor-pointer hover:scale-105 transition-transform`}
                                   variant="default"
                                   onClick={async () => {
                                     const newStat = job.status === "open" ? "closed" : "open";
@@ -407,7 +407,7 @@ const AdminDashboard = () => {
                                 <div className="flex justify-end gap-2">
                                   <Dialog>
                                     <DialogTrigger asChild>
-                                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-[#06A3DA]">
+                                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-[#E43A3A]">
                                         <Settings className="h-4 w-4" />
                                       </Button>
                                     </DialogTrigger>

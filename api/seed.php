@@ -46,9 +46,9 @@ try {
 $force = isset($_GET['force']) && $_GET['force'] === '1';
 
 if ($force) {
-    // Remove test/dummy data only
-    $pdo->exec("DELETE FROM jobs WHERE title = 'test' OR description = 'eedsaf' OR department = 'res'");
-    echo "<h3>Dummy jobs cleared.</h3>";
+    // Remove test/dummy data AND old seed to force fresh insert
+    $pdo->exec("DELETE FROM jobs WHERE title = 'test' OR description = 'eedsaf' OR department = 'res' OR id = 'seed_job_001'");
+    echo "<h3 style='color:orange'>⚠️ Dummy + old seed jobs cleared. Inserting fresh seed...</h3>";
 }
 
 // Check if job already exists

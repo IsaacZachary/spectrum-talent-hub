@@ -109,7 +109,7 @@ export function PortalFooter() {
                             &copy; 2026 <a href="https://spectrumnetworkpi.com" className="text-white hover:text-[#E43A3A]">Spectrum Network International</a>. All Rights Reserved.
                         </p>
                         <p className="mb-0 text-xs text-slate-400">
-                            Portal Developer: <a href="https://izach.netlify.app/contact" target="_blank" rel="noopener noreferrer" className="text-[#E43A3A] hover:underline font-bold">IZACH</a>
+                            Portal Developer: <a href="https://izach.netlify.app/contact" target="_blank" rel="noopener noreferrer" className="text-[#E43A3A] hover:underline font-bold">izach</a>
                         </p>
                     </div>
                 </div>

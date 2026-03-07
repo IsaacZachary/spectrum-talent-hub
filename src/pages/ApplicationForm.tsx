@@ -42,7 +42,7 @@ const ApplicationForm = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC]">
-        <div className="w-12 h-12 border-4 border-[#06A3DA]/20 border-t-[#06A3DA] rounded-full animate-spin mb-4"></div>
+        <div className="w-12 h-12 border-4 border-[#E43A3A]/20 border-t-[#E43A3A] rounded-full animate-spin mb-4"></div>
         <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Preparing Application...</p>
       </div>
     );
@@ -57,7 +57,7 @@ const ApplicationForm = () => {
             <Briefcase className="w-16 h-16 text-slate-200 mx-auto mb-6" />
             <h2 className="text-2xl font-bold text-[#091E3E] mb-2 uppercase tracking-tight">Job Not Found</h2>
             <p className="text-slate-500 mb-8">This position may have been recently filled or the link is incorrect.</p>
-            <Button asChild className="w-full bg-[#06A3DA] hover:bg-[#058dbd] text-white font-bold tracking-widest uppercase py-6 rounded-xl shadow-lg">
+            <Button asChild className="w-full bg-[#E43A3A] hover:bg-[#c02a2a] text-white font-bold tracking-widest uppercase py-6 rounded-xl shadow-lg">
               <Link to="/">Browse Active Jobs</Link>
             </Button>
           </div>
@@ -81,7 +81,7 @@ const ApplicationForm = () => {
               Thank you for applying to be our next <strong className="text-[#091E3E]">{job.title}</strong>.
               Our HR team will review your credentials and contact you shortly regarding the next steps.
             </p>
-            <Button asChild className="w-full bg-[#06A3DA] hover:bg-[#058dbd] text-white font-bold tracking-widest uppercase py-6 rounded-xl shadow-lg">
+            <Button asChild className="w-full bg-[#E43A3A] hover:bg-[#c02a2a] text-white font-bold tracking-widest uppercase py-6 rounded-xl shadow-lg">
               <Link to="/">Back to Careers</Link>
             </Button>
           </div>
@@ -134,19 +134,19 @@ const ApplicationForm = () => {
         {/* Banner Section */}
         <section className="bg-[#091E3E] text-white py-12 lg:py-16">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <Link to="/" className="text-[#06A3DA] hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-6">
+            <Link to="/" className="text-[#E43A3A] hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest mb-6">
               <ArrowLeft className="w-4 h-4" /> Back to Listings
             </Link>
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
               <div>
                 <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{job.title}</h1>
                 <div className="flex flex-wrap items-center gap-4 text-white/60 text-sm mt-3 font-medium">
-                  <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-[#06A3DA]" /> {job.location}</span>
-                  <span className="flex items-center gap-1.5"><Briefcase className="w-4 h-4 text-[#06A3DA]" /> {job.type}</span>
-                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-[#06A3DA]" /> {job.salary}</span>
+                  <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-[#E43A3A]" /> {job.location}</span>
+                  <span className="flex items-center gap-1.5"><Briefcase className="w-4 h-4 text-[#E43A3A]" /> {job.type}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-[#E43A3A]" /> {job.salary}</span>
                 </div>
               </div>
-              <Badge className="bg-[#06A3DA] text-white px-4 py-1.5 font-bold tracking-widest uppercase text-[10px] rounded-full">Open Enrollment</Badge>
+              <Badge className="bg-[#E43A3A] text-white px-4 py-1.5 font-bold tracking-widest uppercase text-[10px] rounded-full">Open Enrollment</Badge>
             </div>
           </div>
         </section>
@@ -159,7 +159,7 @@ const ApplicationForm = () => {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6">
               <div>
                 <h3 className="text-[#091E3E] font-bold uppercase tracking-widest text-xs mb-4 flex items-center gap-2">
-                  <Info className="w-4 h-4 text-[#06A3DA]" /> Role Summary
+                  <Info className="w-4 h-4 text-[#E43A3A]" /> Role Summary
                 </h3>
                 <p className="text-sm text-slate-500 leading-relaxed font-medium">
                   {job.description}
@@ -171,7 +171,7 @@ const ApplicationForm = () => {
                 <ul className="space-y-3">
                   {job.benefits.map((benefit, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-slate-500 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#06A3DA] mt-2 shrink-0"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E43A3A] mt-2 shrink-0"></span>
                       {benefit}
                     </li>
                   ))}
@@ -179,11 +179,11 @@ const ApplicationForm = () => {
               </div>
               <div className="h-px bg-slate-100"></div>
               <div className="text-xs text-slate-400 font-medium flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#06A3DA]" /> Applications close: {new Date(job.closingDate).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                <Calendar className="w-4 h-4 text-[#E43A3A]" /> Applications close: {new Date(job.closingDate).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
               </div>
             </div>
 
-            <div className="bg-[#06A3DA] rounded-2xl p-8 text-white shadow-xl shadow-[#06A3DA]/20 group overflow-hidden relative">
+            <div className="bg-[#E43A3A] rounded-2xl p-8 text-white shadow-xl shadow-[#E43A3A]/20 group overflow-hidden relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-10 -translate-y-10 group-hover:scale-150 transition-transform duration-700"></div>
               <h4 className="text-xl font-bold mb-3 relative z-10">Need Assistance?</h4>
               <p className="text-white/80 text-sm mb-6 relative z-10 font-medium leading-relaxed">
@@ -207,34 +207,34 @@ const ApplicationForm = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Full Name *</Label>
-                      <Input id="name" name="name" placeholder="e.g. John Doe" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                      <Input id="name" name="name" placeholder="e.g. John Doe" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Email Address *</Label>
-                      <Input id="email" name="email" type="email" placeholder="john@example.com" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                      <Input id="email" name="email" type="email" placeholder="john@example.com" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone" className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Phone Number *</Label>
-                      <Input id="phone" name="phone" type="tel" placeholder="+254 7XX XXX XXX" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                      <Input id="phone" name="phone" type="tel" placeholder="+254 7XX XXX XXX" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" required />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="location" className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Current Location</Label>
-                      <Input id="location" name="location" placeholder="e.g. Nairobi, Kenya" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" />
+                      <Input id="location" name="location" placeholder="e.g. Nairobi, Kenya" className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="cover" className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Cover Letter / Pitch</Label>
-                    <Textarea id="cover" name="cover" rows={6} placeholder="How can you contribute to Spectrum Network?" className="border-slate-200 focus:border-[#06A3DA] rounded-lg resize-none p-4" />
+                    <Textarea id="cover" name="cover" rows={6} placeholder="How can you contribute to Spectrum Network?" className="border-slate-200 focus:border-[#E43A3A] rounded-lg resize-none p-4" />
                   </div>
 
                   <div className="space-y-2">
                     <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1 font-heading">Digital Resume / CV *</Label>
-                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-10 cursor-pointer hover:border-[#06A3DA] hover:bg-[#06A3DA]/5 transition-all group group-hover:shadow-inner">
-                      <div className="bg-slate-50 p-4 rounded-2xl mb-4 group-hover:bg-[#06A3DA]/10 group-hover:scale-110 transition-all">
-                        <Upload className="h-8 w-8 text-slate-400 group-hover:text-[#06A3DA]" />
+                    <label className="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl p-10 cursor-pointer hover:border-[#E43A3A] hover:bg-[#E43A3A]/5 transition-all group group-hover:shadow-inner">
+                      <div className="bg-slate-50 p-4 rounded-2xl mb-4 group-hover:bg-[#E43A3A]/10 group-hover:scale-110 transition-all">
+                        <Upload className="h-8 w-8 text-slate-400 group-hover:text-[#E43A3A]" />
                       </div>
-                      <span className="text-sm font-bold text-[#091E3E] group-hover:text-[#06A3DA] transition-colors">
+                      <span className="text-sm font-bold text-[#091E3E] group-hover:text-[#E43A3A] transition-colors">
                         {fileName || "Click or drop file to upload"}
                       </span>
                       <span className="text-xs text-slate-400 mt-2 font-medium">PDX, DOC, or DOCX up to 5MB</span>
@@ -256,7 +256,7 @@ const ApplicationForm = () => {
                   </div>
 
                   <div className="pt-4">
-                    <Button type="submit" size="lg" className="w-full bg-[#091E3E] hover:bg-[#06A3DA] text-white font-bold tracking-[0.2em] uppercase transition-all h-16 rounded-2xl shadow-xl shadow-[#091E3E]/20 active:scale-95 text-xs" disabled={isSubmitting}>
+                    <Button type="submit" size="lg" className="w-full bg-[#091E3E] hover:bg-[#E43A3A] text-white font-bold tracking-[0.2em] uppercase transition-all h-16 rounded-2xl shadow-xl shadow-[#091E3E]/20 active:scale-95 text-xs" disabled={isSubmitting}>
                       {isSubmitting ? "Processing Application..." : "Finalize & Submit Application"}
                     </Button>
                     <p className="text-center text-[10px] text-slate-400 mt-6 font-medium uppercase tracking-widest px-8">

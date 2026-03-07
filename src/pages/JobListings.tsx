@@ -84,12 +84,12 @@ const JobListings = () => {
             <div className="md:col-span-2 space-y-2">
               <label className="text-xs font-bold text-[#091E3E] uppercase tracking-wider pl-1">What position are you looking for?</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#06A3DA]" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#E43A3A]" />
                 <Input
                   placeholder="e.g. Investigator, Security Manager..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 h-12 border-slate-200 focus:border-[#06A3DA] focus:ring-[#06A3DA]/10 transition-all rounded-lg"
+                  className="pl-9 h-12 border-slate-200 focus:border-[#E43A3A] focus:ring-[#E43A3A]/10 transition-all rounded-lg"
                 />
               </div>
             </div>
@@ -97,7 +97,7 @@ const JobListings = () => {
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#091E3E] uppercase tracking-wider pl-1">Department</label>
               <Select value={department} onValueChange={setDepartment}>
-                <SelectTrigger className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg">
+                <SelectTrigger className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg">
                   <SelectValue placeholder="All Departments" />
                 </SelectTrigger>
                 <SelectContent>
@@ -112,7 +112,7 @@ const JobListings = () => {
             <div className="space-y-2">
               <label className="text-xs font-bold text-[#091E3E] uppercase tracking-wider pl-1">Job Type</label>
               <Select value={type} onValueChange={setType}>
-                <SelectTrigger className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg">
+                <SelectTrigger className="h-12 border-slate-200 focus:border-[#E43A3A] rounded-lg">
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,7 +142,7 @@ const JobListings = () => {
 
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-4">
-              <div className="w-12 h-12 border-4 border-[#06A3DA]/20 border-t-[#06A3DA] rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#E43A3A]/20 border-t-[#E43A3A] rounded-full animate-spin"></div>
               <p className="text-slate-400 font-medium">Discovering opportunities...</p>
             </div>
           ) : (
@@ -160,7 +160,7 @@ const JobListings = () => {
                   <p className="text-slate-500 max-w-xs mx-auto">Try adjusting your filters or search terms to see more results.</p>
                   <button
                     onClick={() => { setSearch(""); setDepartment("all"); setType("all"); }}
-                    className="mt-6 text-[#06A3DA] font-bold text-sm tracking-wide uppercase hover:underline"
+                    className="mt-6 text-[#E43A3A] font-bold text-sm tracking-wide uppercase hover:underline"
                   >
                     Clear All Filters
                   </button>
@@ -185,7 +185,7 @@ const JobListings = () => {
           )}
 
           {/* About Section matching main site theme */}
-          <div className="mt-24 bg-[#06A3DA] rounded-2xl p-8 lg:p-12 text-white flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="mt-24 bg-[#E43A3A] rounded-2xl p-8 lg:p-12 text-white flex flex-col lg:flex-row items-center justify-between gap-8">
             <div className="lg:max-w-xl text-center lg:text-left">
               <h3 className="text-3xl font-bold mb-4">Can't find the right role?</h3>
               <p className="text-white/80 leading-relaxed">
