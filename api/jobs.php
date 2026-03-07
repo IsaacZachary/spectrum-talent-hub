@@ -26,7 +26,7 @@ if ($method === 'GET') {
         $data['id'] = uniqid('job_');
     }
     
-    $stmt = $pdo->prepare("INSERT INTO jobs (id, title, department, location, type, salary, description, requirements, postedDate, closingDate, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO jobs (id, title, department, location, type, salary, description, requirements, responsibilities, benefits, postedDate, closingDate, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     
     try {
         $stmt->execute([
@@ -37,7 +37,9 @@ if ($method === 'GET') {
             $data['type'],
             $data['salary'],
             $data['description'],
-            isset($data['requirements']) ? json_encode($data['requirements']) : '[]',
+            isset($data['requirements']) ? (is_string($data['requirements']) ? $data['requirements'] : json_encode($data['requirements'])) : '[]',
+            isset($data['responsibilities']) ? (is_string($data['responsibilities']) ? $data['responsibilities'] : json_encode($data['responsibilities'])) : '[]',
+            isset($data['benefits']) ? (is_string($data['benefits']) ? $data['benefits'] : json_encode($data['benefits'])) : '[]',
             date('Y-m-d H:i:s'),
             $data['closingDate'],
             $data['status'] ?? 'open'

@@ -9,15 +9,14 @@ export const api = {
       const response = await fetch(`${API_BASE_URL}/jobs.php`);
       if (!response.ok) throw new Error("Failed to fetch jobs");
       const data = await response.json();
-      if (!Array.isArray(data)) {
-        console.error("API Error:", data);
-        return [];
-      }
-      return data.map((job: any) => ({
+
+      const safeArray = Array.isArray(data) ? data : [];
+
+      return safeArray.map((job: any) => ({
         ...job,
-        responsibilities: JSON.parse(job.responsibilities || "[]"),
-        requirements: JSON.parse(job.requirements || "[]"),
-        benefits: JSON.parse(job.benefits || "[]"),
+        responsibilities: typeof job.responsibilities === 'string' ? JSON.parse(job.responsibilities || "[]") : (job.responsibilities || []),
+        requirements: typeof job.requirements === 'string' ? JSON.parse(job.requirements || "[]") : (job.requirements || []),
+        benefits: typeof job.benefits === 'string' ? JSON.parse(job.benefits || "[]") : (job.benefits || []),
       }));
     } catch (error) {
       console.error("Error fetching jobs:", error);
