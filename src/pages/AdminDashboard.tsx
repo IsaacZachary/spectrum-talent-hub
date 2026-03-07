@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Users, Briefcase, FileText, TrendingUp, Plus } from "lucide-react";
+import { Users, Briefcase, FileText, TrendingUp, Plus, ShieldCheck, Lock, LogOut, ChevronRight, LayoutDashboard, Settings } from "lucide-react";
 import { Application, statusColors, type ApplicationStatus, Job } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import PortalHeader from "@/components/PortalHeader";
+import { PortalFooter } from "@/components/PortalFooter";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -26,12 +27,30 @@ const statusLabels: Record<ApplicationStatus, string> = {
 };
 
 const AdminDashboard = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [pin, setPin] = useState("");
+  const [activeTab, setActiveTab] = useState("applications");
   const [applications, setApplications] = useState<Application[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("all");
 
+  const ADMIN_PIN = "1234"; // Default PIN
+
+  const handlePinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pin === ADMIN_PIN) {
+      setIsAuthenticated(true);
+      toast.success("Authentication successful!");
+    } else {
+      toast.error("Incorrect Administration PIN.");
+      setPin("");
+    }
+  };
+
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const fetchData = async () => {
       try {
         const [appData, jobData] = await Promise.all([
@@ -42,18 +61,19 @@ const AdminDashboard = () => {
         setJobs(jobData);
       } catch (error) {
         console.error(error);
+        toast.error("Failed to fetch dashboard data. Check database connection.");
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [isAuthenticated]);
 
   const stats = [
-    { label: "Open Positions", value: jobs.filter((j) => j.status === "open").length, icon: Briefcase, color: "text-primary" },
-    { label: "Total Applications", value: applications.length, icon: FileText, color: "text-accent" },
-    { label: "New Applications", value: applications.filter((a) => a.status === "new").length, icon: TrendingUp, color: "text-info" },
-    { label: "Shortlisted", value: applications.filter((a) => a.status === "shortlisted").length, icon: Users, color: "text-success" },
+    { label: "Active Jobs", value: jobs.filter((j) => j.status === "open").length, icon: Briefcase, color: "text-[#06A3DA]", bg: "bg-[#06A3DA]/10" },
+    { label: "Total Applications", value: applications.length, icon: FileText, color: "text-[#091E3E]", bg: "bg-slate-100" },
+    { label: "New Candidates", value: applications.filter((a) => a.status === "new").length, icon: TrendingUp, color: "text-[#06A3DA]", bg: "bg-[#06A3DA]/10" },
+    { label: "Shortlisted", value: applications.filter((a) => a.status === "shortlisted").length, icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
   ];
 
   const filteredApps = filterStatus === "all" ? applications : applications.filter((a) => a.status === filterStatus);
@@ -64,229 +84,331 @@ const AdminDashboard = () => {
       setApplications((prev) =>
         prev.map((a) => (a.id === appId ? { ...a, status: newStatus } : a))
       );
-      toast.success(`Application status updated to ${statusLabels[newStatus]}`);
+      toast.success(`Candidate status updated to ${statusLabels[newStatus]}`);
     } catch (error) {
-      toast.error("Failed to update status");
+      toast.error("Failed to update candidate status");
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden transform transition-all hover:shadow-2xl">
+          <div className="bg-[#091E3E] p-8 text-center text-white">
+            <div className="w-16 h-16 bg-[#06A3DA] rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-lg rotate-3">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold uppercase tracking-tight">Admin Gateway</h1>
+            <p className="text-white/60 text-sm mt-1">Authorized personnel only</p>
+          </div>
+
+          <div className="p-8">
+            <form onSubmit={handlePinSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="pin" className="text-xs font-bold text-[#091E3E] uppercase tracking-wider pl-1 font-heading">Security PIN</Label>
+                <Input
+                  id="pin"
+                  type="password"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  placeholder="••••"
+                  className="text-center text-3xl h-16 tracking-[1em] focus:ring-[#06A3DA]/20 focus:border-[#06A3DA] border-slate-200"
+                  maxLength={4}
+                  autoFocus
+                />
+              </div>
+              <Button type="submit" className="w-full h-12 bg-[#06A3DA] hover:bg-[#058dbd] text-white font-bold tracking-widest uppercase transition-all shadow-md active:scale-95">
+                Unlock Dashboard
+              </Button>
+            </form>
+            <div className="mt-8 text-center">
+              <a href="/" className="text-xs text-slate-400 hover:text-[#06A3DA] font-semibold transition-colors flex items-center justify-center gap-1">
+                <ChevronRight className="w-3 h-3 rotate-180" /> Back to Career Portal
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <PortalHeader />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-heading text-2xl font-bold text-foreground">Admin Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Manage jobs, candidates, and recruitment pipeline</p>
-          </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="accent">
-                <Plus className="h-4 w-4 mr-1" /> Post New Job
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-              <DialogHeader>
-                <DialogTitle className="font-heading">Post a New Job</DialogTitle>
-              </DialogHeader>
-              <form className="space-y-4" onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                const newJob = {
-                  title: formData.get("title") as string,
-                  department: formData.get("department") as string,
-                  location: formData.get("location") as string,
-                  type: formData.get("type") as any,
-                  salary: formData.get("salary") as string,
-                  description: formData.get("description") as string,
-                  status: "open",
-                  closingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-                };
-                try {
-                  await api.createJob(newJob);
-                  toast.success("Job posted successfully!");
-                  const updatedJobs = await api.getJobs();
-                  setJobs(updatedJobs);
-                } catch (error) {
-                  toast.error("Failed to post job");
-                }
-              }}>
-                <div className="space-y-2">
-                  <Label>Job Title</Label>
-                  <Input name="title" placeholder="e.g. Security Analyst" required />
+      <main className="flex-grow">
+        {/* Admin Header Section */}
+        <section className="bg-[#091E3E] text-white py-12 lg:py-16">
+          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-[#06A3DA] font-bold text-xs uppercase tracking-widest mb-2 bg-[#06A3DA]/10 px-3 py-1 rounded w-fit">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Secure Admin Session
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
-                    <Label>Department</Label>
-                    <Input name="department" placeholder="e.g. Investigations" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Location</Label>
-                    <Input name="location" placeholder="e.g. Nairobi" required />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
-                    <Label>Job Type</Label>
-                    <Select name="type" defaultValue="Full-time">
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Full-time">Full-time</SelectItem>
-                        <SelectItem value="Part-time">Part-time</SelectItem>
-                        <SelectItem value="Contract">Contract</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Salary Range</Label>
-                    <Input name="salary" placeholder="e.g. KES 80K-120K" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea name="description" rows={3} placeholder="Job description..." required />
-                </div>
-                <Button type="submit" variant="accent" className="w-full">Publish Job</Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-
-        {/* Stats */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-          {stats.map((stat) => (
-            <Card key={stat.label}>
-              <CardContent className="flex items-center gap-4 p-5">
-                <div className={`p-2.5 rounded-lg bg-muted ${stat.color}`}>
-                  <stat.icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-2xl font-heading font-bold text-foreground">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Tabs */}
-        <Tabs defaultValue="applications">
-          <TabsList>
-            <TabsTrigger value="applications">Applications</TabsTrigger>
-            <TabsTrigger value="jobs">Job Listings</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="applications" className="mt-4">
-            <Card>
-              <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
-                <CardTitle className="font-heading text-lg">All Applications</CardTitle>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-[160px]">
-                    <SelectValue placeholder="Filter status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    {Object.entries(statusLabels).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>{label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </CardHeader>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Applicant</TableHead>
-                      <TableHead>Position</TableHead>
-                      <TableHead>Applied</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredApps.map((app) => (
-                      <TableRow key={app.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium text-sm">{app.applicantName}</p>
-                            <p className="text-xs text-muted-foreground">{app.email}</p>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-sm">{app.jobTitle}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{app.appliedDate}</TableCell>
-                        <TableCell>
-                          <Badge className={`${statusColors[app.status]} text-xs`}>
-                            {statusLabels[app.status]}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Select
-                            value={app.status}
-                            onValueChange={(val) => updateStatus(app.id, val as ApplicationStatus)}
-                          >
-                            <SelectTrigger className="w-[130px] h-8 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
+                <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">Recruitment Control Panel</h1>
+                <p className="text-white/60 text-sm">Oversee candidates and job listings</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button onClick={() => setIsAuthenticated(false)} variant="outline" className="border-white/20 text-white hover:bg-white/10 hover:text-white h-11 px-5">
+                  <LogOut className="w-4 h-4 mr-2" /> Logout
+                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="bg-[#06A3DA] hover:bg-[#058dbd] text-white h-11 px-6 font-bold shadow-lg">
+                      <Plus className="h-5 w-5 mr-2" /> Post Job
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl bg-white rounded-2xl shadow-2xl p-0 overflow-hidden border-none animate-in zoom-in-95 duration-200">
+                    <div className="bg-[#091E3E] p-6 text-white pb-10">
+                      <h2 className="text-2xl font-bold flex items-center gap-3">
+                        <Briefcase className="w-6 h-6 text-[#06A3DA]" />
+                        New Job Opportunity
+                      </h2>
+                      <p className="text-white/60 text-sm mt-1">This will be published instantly on the careers portal.</p>
+                    </div>
+                    <form className="p-8 space-y-6 -mt-6 bg-white rounded-t-[32px]" onSubmit={async (e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.currentTarget);
+                      const newJob = {
+                        title: formData.get("title") as string,
+                        department: formData.get("department") as string,
+                        location: formData.get("location") as string,
+                        type: formData.get("type") as any,
+                        salary: formData.get("salary") as string,
+                        description: formData.get("description") as string,
+                        status: "open",
+                        closingDate: formData.get("closingDate") as string || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                      };
+                      try {
+                        await api.createJob(newJob);
+                        toast.success("New position published successfully!");
+                        const updatedJobs = await api.getJobs();
+                        setJobs(updatedJobs);
+                      } catch (error) {
+                        toast.error("Failed to publish job listing");
+                      }
+                    }}>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="space-y-2 col-span-full">
+                          <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Job Title</Label>
+                          <Input name="title" placeholder="e.g. Senior Security Analyst" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Department</Label>
+                          <Input name="department" placeholder="e.g. Investigations" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Location</Label>
+                          <Input name="location" placeholder="e.g. Nairobi CBD" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" required />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Job Type</Label>
+                          <Select name="type" defaultValue="Full-time">
+                            <SelectTrigger className="h-12 border-slate-200 rounded-lg"><SelectValue /></SelectTrigger>
                             <SelectContent>
-                              {Object.entries(statusLabels).map(([key, label]) => (
-                                <SelectItem key={key} value={key}>{label}</SelectItem>
-                              ))}
+                              <SelectItem value="Full-time">Full-time</SelectItem>
+                              <SelectItem value="Part-time">Part-time</SelectItem>
+                              <SelectItem value="Contract">Contract</SelectItem>
                             </SelectContent>
                           </Select>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                {filteredApps.length === 0 && (
-                  <div className="py-8 text-center text-muted-foreground text-sm">
-                    No applications found.
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Closing Date</Label>
+                          <Input name="closingDate" type="date" className="h-12 border-slate-200 focus:border-[#06A3DA] rounded-lg" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[#091E3E] font-bold text-xs uppercase tracking-wider pl-1">Summary / Description</Label>
+                        <Textarea name="description" rows={4} placeholder="Key role overview..." className="border-slate-200 focus:border-[#06A3DA] rounded-lg resize-none" required />
+                      </div>
+                      <Button type="submit" size="lg" className="w-full bg-[#091E3E] hover:bg-[#06A3DA] text-white font-bold tracking-widest uppercase transition-all h-14 rounded-xl shadow-lg">
+                        Publish Opportunity
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </div>
+          </div>
+        </section>
 
-          <TabsContent value="jobs" className="mt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-heading text-lg">All Job Listings</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Department</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Closing Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {jobs.map((job) => (
-                      <TableRow key={job.id}>
-                        <TableCell className="font-medium text-sm">{job.title}</TableCell>
-                        <TableCell className="text-sm">{job.department}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{job.location}</TableCell>
-                        <TableCell className="text-sm">{job.type}</TableCell>
-                        <TableCell>
-                          <Badge className={job.status === "open" ? "bg-success text-success-foreground" : ""} variant={job.status === "open" ? "default" : "secondary"}>
-                            {job.status === "open" ? "Open" : "Closed"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{job.closingDate}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+        {/* Dash Body Container */}
+        <div className="container mx-auto max-w-6xl px-4 lg:px-8 py-8 lg:py-12">
+
+          {/* Top Line Stats */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-10">
+            {stats.map((stat) => (
+              <Card key={stat.label} className="border-slate-100 hover:border-[#06A3DA]/20 transition-all group overflow-hidden bg-white shadow-sm hover:shadow-md rounded-2xl">
+                <CardContent className="flex items-center gap-5 p-6">
+                  <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} transition-all duration-300 group-hover:scale-110`}>
+                    <stat.icon className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-[#091E3E] tracking-tight">{stat.value}</p>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">{stat.label}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            {/* Sidebar Controls */}
+            <div className="lg:col-span-3 space-y-4">
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-3 sticky top-24">
+                <button
+                  onClick={() => setActiveTab("applications")}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all ${activeTab === 'applications' ? 'bg-[#091E3E] text-white shadow-lg shadow-[#091E3E]/10' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  <Users className="w-4 h-4" /> Applications
+                </button>
+                <button
+                  onClick={() => setActiveTab("jobs")}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all mt-1 ${activeTab === 'jobs' ? 'bg-[#091E3E] text-white shadow-lg shadow-[#091E3E]/10' : 'text-slate-500 hover:bg-slate-50'}`}
+                >
+                  <Briefcase className="w-4 h-4" /> Job Listings
+                </button>
+                <div className="h-px bg-slate-100 my-4 mx-2"></div>
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-50 transition-all cursor-not-allowed">
+                  <TrendingUp className="w-4 h-4" /> Reports
+                </button>
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm text-slate-400 hover:bg-slate-50 transition-all cursor-not-allowed">
+                  <Settings className="w-4 h-4" /> Settings
+                </button>
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="lg:col-span-9">
+              {activeTab === "applications" ? (
+                <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+                  <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-6 px-6 lg:px-8">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-slate-100 rounded-lg"><Users className="w-5 h-5 text-[#091E3E]" /></div>
+                      <CardTitle className="text-xl font-bold text-[#091E3E]">Active Candidates</CardTitle>
+                    </div>
+                    <Select value={filterStatus} onValueChange={setFilterStatus}>
+                      <SelectTrigger className="w-[180px] h-10 border-slate-200 rounded-lg">
+                        <SelectValue placeholder="Pipeline Step" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Pipeline Steps</SelectItem>
+                        {Object.entries(statusLabels).map(([key, label]) => (
+                          <SelectItem key={key} value={key}>{label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader className="bg-slate-50/50">
+                          <TableRow className="hover:bg-transparent border-slate-100">
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest pl-8 py-4">Applicant</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Target Role</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Applied On</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Current Status</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest text-right pr-8 py-4">Update Status</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredApps.map((app) => (
+                            <TableRow key={app.id} className="group hover:bg-slate-50/50 border-slate-50 transition-colors">
+                              <TableCell className="pl-8 py-5">
+                                <div className="space-y-0.5">
+                                  <p className="font-bold text-[#091E3E]">{app.applicantName}</p>
+                                  <p className="text-xs text-slate-400 font-medium">{app.email}</p>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-sm font-semibold text-[#091E3E]">{app.jobTitle}</TableCell>
+                              <TableCell className="text-xs text-slate-400 font-bold">{new Date(app.appliedDate).toLocaleDateString()}</TableCell>
+                              <TableCell>
+                                <Badge className={`${statusColors[app.status]} text-[10px] uppercase font-bold px-3 py-1 rounded-full shadow-sm`}>
+                                  {statusLabels[app.status]}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right pr-8">
+                                <Select
+                                  value={app.status}
+                                  onValueChange={(val) => updateStatus(app.id, val as ApplicationStatus)}
+                                >
+                                  <SelectTrigger className="w-[140px] ml-auto h-9 text-[11px] font-bold uppercase tracking-wider border-slate-200 rounded-lg">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {Object.entries(statusLabels).map(([key, label]) => (
+                                      <SelectItem key={key} value={key} className="text-[11px] font-semibold">{label}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    {filteredApps.length === 0 && (
+                      <div className="py-20 text-center space-y-3">
+                        <div className="bg-slate-50 p-4 rounded-full w-fit mx-auto"><Users className="w-8 h-8 text-slate-200" /></div>
+                        <p className="text-slate-400 font-bold text-sm uppercase tracking-wider">No candidates found in this stage.</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="border-slate-100 shadow-sm rounded-2xl overflow-hidden bg-white">
+                  <CardHeader className="border-b border-slate-50 py-6 px-6 lg:px-8">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-slate-100 rounded-lg"><Briefcase className="w-5 h-5 text-[#091E3E]" /></div>
+                      <CardTitle className="text-xl font-bold text-[#091E3E]">Active Job Inventory</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader className="bg-slate-50/50">
+                          <TableRow className="hover:bg-transparent border-slate-100">
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest pl-8 py-4">Opportunity</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Industry / Dept</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Contract</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest py-4">Visibility</TableHead>
+                            <TableHead className="font-bold text-[#091E3E] uppercase text-[10px] tracking-widest text-right pr-8 py-4">Closing On</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {jobs.map((job) => (
+                            <TableRow key={job.id} className="group hover:bg-slate-50/50 border-slate-50 transition-colors">
+                              <TableCell className="pl-8 py-5">
+                                <div className="space-y-0.5">
+                                  <p className="font-bold text-[#091E3E]">{job.title}</p>
+                                  <p className="text-xs text-slate-400 font-medium">{job.location}</p>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-sm font-semibold text-[#091E3E] uppercase tracking-wider text-[11px]">{job.department}</TableCell>
+                              <TableCell className="text-sm font-medium text-slate-500">{job.type}</TableCell>
+                              <TableCell>
+                                <Badge className={job.status === "open" ? "bg-[#06A3DA] text-white" : "bg-slate-100 text-slate-400 border-none"} variant="default">
+                                  {job.status === "open" ? "Public" : "Archived"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right pr-8 text-xs font-bold text-slate-400">
+                                {new Date(job.closingDate).toLocaleDateString()}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <PortalFooter />
     </div>
   );
 };
