@@ -8,7 +8,30 @@ This guide explains how to correctly update the Spectrum Talent Hub portal.
 
 ---
 
-## 🔄 The Update Workflow (Standard Procedure)
+## � Local Environment Setup
+
+Before you can make changes, your computer needs the following tools:
+
+### 1. Required Software
+- **Node.js**: [Download here](https://nodejs.org/). (Recommend the LTS version). This is needed to "build" the website.
+- **Git**: [Download here](https://git-scm.com/downloads). This is needed to send your changes to GitHub.
+- **Visual Studio Code**: [Download here](https://code.visualstudio.com/). The recommended editor for making code changes.
+
+### 2. First-Time Setup
+Once you have the software above:
+1. **Clone the project**:
+   ```bash
+   git clone https://github.com/IsaacZachary/spectrum-talent-hub.git
+   ```
+2. **Open the folder** in VS Code.
+3. **Install dependencies**: Open the terminal in VS Code and run:
+   ```bash
+   npm install
+   ```
+
+---
+
+## �🔄 The Update Workflow (Standard Procedure)
 
 To ensure your changes reflect on the live site, ALWAYS follow these 4 steps:
 
