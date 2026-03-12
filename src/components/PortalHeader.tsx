@@ -26,7 +26,7 @@ const PortalHeader = () => {
               <div className="flex items-center gap-6">
                 <span className="flex items-center gap-2 group cursor-default">
                   <MapPin className="w-3.5 h-3.5 text-[#E43A3A] group-hover:scale-110 transition-transform" />
-                  Jacob Chege Drive, off Bogani Road, Karen
+                  Hazina Trade Centre, 14th Floor,Moktar Daddah Street, Nairobi CBD
                 </span>
                 <span className="flex items-center gap-2 group cursor-default">
                   <Phone className="w-3.5 h-3.5 text-[#E43A3A] group-hover:scale-110 transition-transform" />

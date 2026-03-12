@@ -15,7 +15,7 @@ export function PortalFooter() {
                             </h1>
                         </a>
                         <p className="mt-3 mb-4 text-white/90 text-sm italic">
-                            "We are the leading Risk Management, Private Investigations and Market Research company in Africa."
+                            "We are a leading African provider of Risk Management, Investigations, and Business Intelligence services"
                         </p>
                         <div className="flex gap-4 mt-2">
                             <a href="#" className="h-9 w-9 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-[#E43A3A] transition-all">
@@ -40,7 +40,7 @@ export function PortalFooter() {
                             <div className="flex mt-2 mb-4 items-start group">
                                 <MapPin className="w-5 h-5 mr-3 text-[#E43A3A] shrink-0 mt-1" />
                                 <p className="mb-0 text-sm leading-relaxed group-hover:text-white transition-colors">
-                                    Hazina Trade Center, 14th Floor, <br />
+                                    Hazina Trade Center, 14th Floor,
                                     Moktar Daddah Street, Nairobi Kenya
                                 </p>
                             </div>
